@@ -28,7 +28,7 @@ exports.notFound = (req, res, next) => {
 exports.developmentErrors = (err, req, res) => {
   err.stack = err.stack || '';
   const errorDetails = {
-    message: err.message,
+    message: err.message || 'Oops, Something Went Wrong',
     status: err.status,
     stack: err.stack
   };
@@ -43,7 +43,7 @@ exports.developmentErrors = (err, req, res) => {
 exports.productionErrors = (err, req, res) => {
   res.status(err.status || 500);
   res.json({
-    message: err.message,
+    message: err.message || 'Oops, Something Went Wrong',
     error: {}
   });
 };

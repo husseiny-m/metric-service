@@ -1,16 +1,26 @@
-const moment = require('moment');
 const dataStore = require('../data/DataStore');
+const { MetricMaxLifeTimeMinutes } = require('../app.config');
+const helper = require('../helpers/helper');
 
 function getMetricSum(key) {
-  const metricValues = dataStore.get(key);
-  metricValues.filter(metric => {
-    return moment().diff(metric.createdAt, 'minutes') <= 60;
-  });
+  const metricItems = dataStore.get(key);
+
+  return metricItems.reduce((accumulator, metric) => {
+    const minutes = helper.getMetricLifetimeInMinutes(metric.createdAt);
+
+    return minutes <= MetricMaxLifeTimeMinutes
+      ? accumulator + metric.value
+      : accumulator;
+  }, 0);
+}
+
+function addMetric(key, value) {
+  const metric = helper.constructMetric(value);
+  dataStore.add(key, metric);
+}
+
+function getMetric(key) {
   return dataStore.get(key);
 }
 
-function AddMetric(key, value) {
-  const metricItem = { value, createdAt: moment() };
-  dataStore.add(key, metricItem);
-}
-module.exports = { getMetricSum, AddMetric };
+module.exports = { getMetricSum, addMetric, getMetric };
