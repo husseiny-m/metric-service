@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const { catchErrors } = require('../handlers/errorHandlers');
-const {
-  validateMetricKey,
-  validateMetricValue
-} = require('../middlewares/validation.middleware');
+const { keySchema, valueSchema } = require('../validation/schemas');
+const { validate } = require('../validation/middleware');
 const {
   addMetric,
   getMetricSum,
@@ -14,13 +12,17 @@ const {
 
 router.post(
   '/:key',
-  validateMetricKey,
-  validateMetricValue,
+  validate(keySchema, 'params'),
+  validate(valueSchema, 'body'),
   catchErrors(addMetric)
 );
 
-router.get('/:key/sum', validateMetricKey, catchErrors(getMetricSum));
+router.get(
+  '/:key/sum',
+  validate(keySchema, 'params'),
+  catchErrors(getMetricSum)
+);
 
-router.get('/:key', validateMetricKey, catchErrors(getMetric));
+router.get('/:key', validate(keySchema, 'params'), catchErrors(getMetric));
 
 module.exports = router;
