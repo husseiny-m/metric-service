@@ -6,7 +6,44 @@ All values will be rounded to the nearest integer e.g. *10.5 will be 11 and 10.2
 
 Any reported data after it is more than an hour old will be removed, since we only care about data in the most recent hour.
 
-## Example:
+## APIs
+
+### POST metric
+
+Request
+
+```bash
+POST /metric/{key}
+{
+  "value": 30
+}
+```
+
+Response (200)
+
+```bash
+{}
+```
+
+### GET metric sum
+
+Returns the sum of all metrics reported for this key over the past hour
+
+Request
+
+```bash
+GET /metric/{key}/sum
+```
+
+Response (200)
+
+```bash
+{
+  "value": 400
+}
+```
+
+## Example
 
 Imagine these are the events logged to your service for a metric "active_visitors":
 
