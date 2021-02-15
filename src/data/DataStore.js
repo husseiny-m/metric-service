@@ -1,3 +1,5 @@
+const { MetricMaxLifeTimeMinutes } = require('../app.config');
+const helper = require('../helpers/helper');
 class DataStore {
   constructor() {
     if (!DataStore.instance) {
@@ -17,6 +19,15 @@ class DataStore {
 
   get(key) {
     return this._data[key] || [];
+  }
+
+  removeOutdatedMetrics() {
+    for (const key in this._data) {
+      this._data[key] = this._data[key].filter(metric => {
+        const minutes = helper.getMetricLifetimeInMinutes(metric.createdAt);
+        return minutes <= MetricMaxLifeTimeMinutes;
+      });
+    }
   }
 }
 
