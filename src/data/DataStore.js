@@ -21,6 +21,10 @@ class DataStore {
     return this._data[key] || [];
   }
 
+  remove(key) {
+    this._data[key] = [];
+  }
+
   removeOutdatedMetrics() {
     for (const key in this._data) {
       this._data[key] = this._data[key].filter(metric => {
